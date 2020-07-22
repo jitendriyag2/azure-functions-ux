@@ -21,6 +21,8 @@ const DeploymentCenterGitHubDataLoader: React.FC<DeploymentCenterFieldProps> = p
     t('deploymentCenterOAuthFetchingUserInformation')
   );
 
+  // TODO(DC) look in to useRef for repo, branch, and org
+
   const [organizationOptions, setOrganizationOptions] = useState<IDropdownOption[]>([]);
   const [repositoryOptions, setRepositoryOptions] = useState<IDropdownOption[]>([]);
   const [branchOptions, setBranchOptions] = useState<IDropdownOption[]>([]);
@@ -144,6 +146,7 @@ const DeploymentCenterGitHubDataLoader: React.FC<DeploymentCenterFieldProps> = p
   const fetchData = async () => {
     const getGitHubUserRequest = deploymentCenterData.getGitHubUser(getArmToken());
 
+    // TODO(DC) no need for spread operator
     const [gitHubUserResponse] = await Promise.all([getGitHubUserRequest]);
 
     setGitHubAccountStatusMessage(undefined);

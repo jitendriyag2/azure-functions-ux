@@ -18,6 +18,8 @@ const DeploymentCenterCodePivot: React.FC<DeploymentCenterCodePivotProps> = prop
     isLoading,
   } = props;
   const { t } = useTranslation();
+  // TODO(DC) rename to selectedPivotKey
+  // TODO(DC) lets add a enum for pivot keys
   const [selectedKey, setSelectedKey] = useState<string>('logs');
 
   const goToSettingsOnClick = () => {

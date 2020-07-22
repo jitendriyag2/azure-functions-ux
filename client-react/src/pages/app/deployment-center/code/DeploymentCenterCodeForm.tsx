@@ -34,6 +34,7 @@ const DeploymentCenterCodeForm: React.FC<DeploymentCenterCodeFormProps> = props 
   return (
     <Formik
       initialValues={props.formData}
+      // TODO(DC) what is the onsubmit for?
       onSubmit={onSubmit}
       enableReinitialize={true}
       validateOnBlur={false}
@@ -41,6 +42,7 @@ const DeploymentCenterCodeForm: React.FC<DeploymentCenterCodeFormProps> = props 
       validationSchema={props.formValidationSchema}>
       {(formProps: FormikProps<DeploymentCenterFormData<DeploymentCenterCodeFormData>>) => (
         <form onKeyDown={onKeyDown}>
+          {/* TODO(DC) Move the div tag to the component */}
           <div id="deployment-center-command-bar" className={commandBarSticky}>
             <DeploymentCenterCodeCommandBar
               isLoading={props.isLoading}
@@ -49,6 +51,7 @@ const DeploymentCenterCodeForm: React.FC<DeploymentCenterCodeFormProps> = props 
               formProps={formProps}
             />
           </div>
+          {/* TODO(DC) remove the empty <> tags */}
           <>
             <ConfirmDialog
               primaryActionButton={{
@@ -65,6 +68,7 @@ const DeploymentCenterCodeForm: React.FC<DeploymentCenterCodeFormProps> = props 
               onDismiss={hideRefreshConfirmDialog}
             />
           </>
+          {/* TODO(DC) move to the component */}
           <div className={pivotContent}>
             <DeploymentCenterCodePivot {...props} formProps={formProps} />
           </div>

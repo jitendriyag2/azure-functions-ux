@@ -31,6 +31,7 @@ const DeploymentCenterCodeSettings: React.FC<DeploymentCenterFieldProps<Deployme
 
   const isGitHubSource = formProps.values.sourceProvider === ScmType.GitHub;
   const isGitHubActionsBuild = formProps.values.buildProvider === BuildProvider.GitHubAction;
+  // TODO(DC) lets update to isDeploymentConfigured, isgitHubActionconfigured.. etc.
   const isDeploymentSetup = deploymentCenterContext.siteConfig && deploymentCenterContext.siteConfig.properties.scmType !== ScmType.None;
   const isGitHubActionsSetup =
     deploymentCenterContext.siteConfig && deploymentCenterContext.siteConfig.properties.scmType === ScmType.GitHubAction;
@@ -64,7 +65,9 @@ const DeploymentCenterCodeSettings: React.FC<DeploymentCenterFieldProps<Deployme
 
   const getPreviewPanelContent = () => {
     if (deploymentCenterContext.siteDescriptor) {
+      // TODO(DC) lets move this further down
       if (formProps.values.workflowOption === WorkflowOption.UseExistingWorkflowConfig) {
+        // TODO(DC) refactor with a helper method that take in message and content.
         return (
           <>
             {showInfoBanner && (

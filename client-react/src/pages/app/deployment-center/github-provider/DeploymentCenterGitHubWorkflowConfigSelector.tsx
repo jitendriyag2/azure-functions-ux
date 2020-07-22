@@ -14,6 +14,8 @@ const DeploymentCenterGitHubWorkflowConfigSelector: React.FC<DeploymentCenterGit
   const { formProps, setGithubActionExistingWorkflowContents } = props;
   const { t } = useTranslation();
 
+  // TODO(DC) useRef?
+
   const [selectedWorkflowConfigOption, setSelectedWorkflowConfigOption] = useState<WorkflowOption | undefined>(undefined);
   const [showWorkflowConfigDropdown, setShowWorkflowConfigDropdown] = useState<boolean>(false);
   const [workflowConfigDropdownOptions, setWorkflowConfigDropdownOptions] = useState<IDropdownOption[] | undefined>(undefined);
@@ -78,6 +80,11 @@ const DeploymentCenterGitHubWorkflowConfigSelector: React.FC<DeploymentCenterGit
         getWorkflowConfigurationRequest,
       ]);
 
+      // TODO(DC)
+      // setShowWarningBanner(appWorkflowConfigurationResponse.metadata.success
+      //   || allWorkflowConfigurationsResponse.metadata.success && allWorkflowConfigurationsResponse.data.length > 0 )
+      //   setShowWorkflowConfigDropdown
+
       if (appWorkflowConfigurationResponse.metadata.success) {
         setShowWarningBanner(true);
         setWorkflowFileExistsWarningMessage(
@@ -87,6 +94,11 @@ const DeploymentCenterGitHubWorkflowConfigSelector: React.FC<DeploymentCenterGit
           })
         );
 
+        // TODO(DC)
+        // const content = appWorkflowConfigurationResponse.data.content
+        // ? atob(appWorkflowConfigurationResponse.data.content)
+        // : ''
+        // setGithubActionExistingWorkflowContents(content)
         if (appWorkflowConfigurationResponse.data.content) {
           setGithubActionExistingWorkflowContents(atob(appWorkflowConfigurationResponse.data.content));
         } else {
