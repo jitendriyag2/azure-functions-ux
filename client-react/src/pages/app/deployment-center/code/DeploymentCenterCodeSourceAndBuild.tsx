@@ -18,6 +18,8 @@ const DeploymentCenterCodeSourceAndBuild: React.FC<DeploymentCenterFieldProps<De
   const { formProps } = props;
   const { t } = useTranslation();
 
+  // TODO(DC) check to see if we can replace useState with useRef for any.
+
   const [selectedBuild, setSelectedBuild] = useState<BuildProvider>(BuildProvider.None);
   const [selectedBuildChoice, setSelectedBuildChoice] = useState<BuildProvider>(BuildProvider.None);
   const [isCalloutVisible, setIsCalloutVisible] = useState(false);
@@ -30,6 +32,7 @@ const DeploymentCenterCodeSourceAndBuild: React.FC<DeploymentCenterFieldProps<De
     setIsCalloutVisible(!isCalloutVisible);
   };
 
+  // TODO(DC) rename isProductionSlot() doesn't need to be a function either.
   const getInProductionSlot = () => {
     return !(deploymentCenterContext.siteDescriptor && deploymentCenterContext.siteDescriptor.slot);
   };
@@ -99,6 +102,7 @@ const DeploymentCenterCodeSourceAndBuild: React.FC<DeploymentCenterFieldProps<De
   const isGitHubActionsBuild = formProps.values.buildProvider === BuildProvider.GitHubAction;
   const calloutOkButtonDisabled = selectedBuildChoice === selectedBuild;
 
+  // TODO(DC) rename to getBuildProviderDescription
   const getBuildDescription = () => {
     return isGitHubActionsBuild ? t('deploymentCenterGitHubActionsBuildDescription') : t('deploymentCenterKuduBuildDescription');
   };
@@ -124,7 +128,7 @@ const DeploymentCenterCodeSourceAndBuild: React.FC<DeploymentCenterFieldProps<De
           <CustomBanner message={t('deploymentCenterProdSlotWarning')} type={MessageBarType.info} onDismiss={closeInfoBanner} />
         </div>
       )}
-
+      {/* TODO(DC) move up */}
       <p>
         <span id="deployment-center-settings-message">{t('deploymentCenterCodeSettingsDescription')}</span>
         <Link
@@ -158,6 +162,7 @@ const DeploymentCenterCodeSourceAndBuild: React.FC<DeploymentCenterFieldProps<De
                   key="deployment-center-change-build-provider"
                   onClick={toggleIsCalloutVisible}
                   className={additionalTextFieldControl}
+                  // TODO(DC) change to BuildProviderText
                   aria-label={t('deploymentCenterChangeBuildText')}>
                   {`${t('deploymentCenterChangeBuildText')}`}
                 </Link>

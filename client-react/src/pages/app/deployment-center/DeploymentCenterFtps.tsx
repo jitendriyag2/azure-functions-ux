@@ -23,6 +23,8 @@ const DeploymentCenterFtps: React.FC<
   const { t } = useTranslation();
   const { publishingProfile, publishingUser, resetApplicationPassword, isLoading } = props;
 
+  // TODO(DC) reach out krrish to see if the password type is still needed?
+  // basically can we just use his password textbox changes and not have the "type"
   const [applicationPasswordType, setApplicationPasswordType] = useState<PasswordFieldType>('password');
   const [providerPasswordType, setProviderPasswordType] = useState<PasswordFieldType>('password');
   const [providerConfirmPasswordType, setProviderConfirmPasswordType] = useState<PasswordFieldType>('password');
