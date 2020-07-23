@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import DeploymentCenterGitHubAccount from './DeploymentCenterGitHubAccount';
+import DeploymentCenterGitHubSettings from './DeploymentCenterGitHubSettings';
 import { DeploymentCenterGitHubProviderProps } from '../DeploymentCenter.types';
 import { DeploymentCenterContext } from '../DeploymentCenterContext';
 
@@ -15,9 +15,8 @@ const DeploymentCenterGitHubProvider: React.FC<DeploymentCenterGitHubProviderPro
       ) : (
         <h3>{t('deploymentCenterCodeGitHubTitle')}</h3>
       )}
-      <DeploymentCenterGitHubAccount {...props} />
+      <DeploymentCenterGitHubSettings {...props} />
     </>
-    //TODO (michinoy): We can start adding the github source controls here now.
   );
 };
 
