@@ -10,7 +10,7 @@ import DeploymentCenterGitHubWorkflowConfigSelector from '../github-provider/Dep
 import DeploymentCenterGitHubWorkflowConfigPreview from '../github-provider/DeploymentCenterGitHubWorkflowConfigPreview';
 import DeploymentCenterCodeBuildRuntimeAndVersion from './DeploymentCenterCodeBuildRuntimeAndVersion';
 import CustomBanner from '../../../../components/CustomBanner/CustomBanner';
-import { deploymentCenterConsole, panelBanner } from '../DeploymentCenter.styles';
+import { deploymentCenterConsole, panelBanner, deploymentCenterInfoBannerDiv } from '../DeploymentCenter.styles';
 import { MessageBarType, Link } from 'office-ui-fabric-react';
 import { useTranslation } from 'react-i18next';
 import { getWorkflowInformation } from '../utility/GitHubActionUtility';
@@ -22,29 +22,34 @@ import { learnMoreLinkStyle } from '../../../../components/form-controls/formCon
 const DeploymentCenterCodeSettings: React.FC<DeploymentCenterFieldProps<DeploymentCenterCodeFormData>> = props => {
   const { formProps } = props;
   const { t } = useTranslation();
-  const [showInfoBanner, setShowInfoBanner] = useState(true);
-
-  const deploymentCenterContext = useContext(DeploymentCenterContext);
-
+  const [showPreviewPanelInfoBanner, setShowPreviewPanelInfoBanner] = useState(true);
+  const [showProductionSlotInfoBanner, setShowProductionSlotInfoBanner] = useState(true);
   const [githubActionExistingWorkflowContents, setGithubActionExistingWorkflowContents] = useState<string>('');
   const [workflowFilePath, setWorkflowFilePath] = useState<string>('');
 
+  const deploymentCenterContext = useContext(DeploymentCenterContext);
+
   const isGitHubSource = formProps.values.sourceProvider === ScmType.GitHub;
   const isGitHubActionsBuild = formProps.values.buildProvider === BuildProvider.GitHubAction;
-  // TODO(DC) lets update to isDeploymentConfigured, isgitHubActionconfigured.. etc.
-  const isDeploymentSetup = deploymentCenterContext.siteConfig && deploymentCenterContext.siteConfig.properties.scmType !== ScmType.None;
-  const isGitHubActionsSetup =
+  const isDeploymentConfigured =
+    deploymentCenterContext.siteConfig && deploymentCenterContext.siteConfig.properties.scmType !== ScmType.None;
+  const isGitHubActionsConfigured =
     deploymentCenterContext.siteConfig && deploymentCenterContext.siteConfig.properties.scmType === ScmType.GitHubAction;
-  const isGitHubSourceSetup =
+  const isGitHubSourceConfigured =
     deploymentCenterContext.siteConfig &&
     (deploymentCenterContext.siteConfig.properties.scmType === ScmType.GitHubAction ||
       deploymentCenterContext.siteConfig.properties.scmType === ScmType.GitHub);
   const isUsingExistingOrAvailableWorkflowConfig =
     formProps.values.workflowOption === WorkflowOption.UseExistingWorkflowConfig ||
     formProps.values.workflowOption === WorkflowOption.UseAvailableWorkflowConfigs;
+  const isProductionSlot = !(deploymentCenterContext.siteDescriptor && deploymentCenterContext.siteDescriptor.slot);
 
-  const closeInfoBanner = () => {
-    setShowInfoBanner(false);
+  const closePreviewPanelInfoBanner = () => {
+    setShowPreviewPanelInfoBanner(false);
+  };
+
+  const closeProductionSlotInfoBanner = () => {
+    setShowProductionSlotInfoBanner(false);
   };
 
   const isPreviewFileButtonEnabled = () => {
@@ -63,65 +68,36 @@ const DeploymentCenterCodeSettings: React.FC<DeploymentCenterFieldProps<Deployme
     return false;
   };
 
+  const createPreviewPanelContent = (customBannerMessage: string, content: string) => {
+    return (
+      <>
+        {showPreviewPanelInfoBanner && (
+          <div className={panelBanner}>
+            <CustomBanner message={customBannerMessage} type={MessageBarType.info} onDismiss={closePreviewPanelInfoBanner} />
+          </div>
+        )}
+        {content && <pre className={deploymentCenterConsole}>{content}</pre>}
+      </>
+    );
+  };
+
   const getPreviewPanelContent = () => {
-    if (deploymentCenterContext.siteDescriptor) {
-      // TODO(DC) lets move this further down
-      if (formProps.values.workflowOption === WorkflowOption.UseExistingWorkflowConfig) {
-        // TODO(DC) refactor with a helper method that take in message and content.
-        return (
-          <>
-            {showInfoBanner && (
-              <div className={panelBanner}>
-                <CustomBanner
-                  message={t('githubActionWorkflowOptionUseExistingMessage')}
-                  type={MessageBarType.info}
-                  onDismiss={closeInfoBanner}
-                />
-              </div>
-            )}
-            <pre className={deploymentCenterConsole}>{githubActionExistingWorkflowContents}</pre>
-          </>
-        );
-      } else if (formProps.values.workflowOption === WorkflowOption.UseAvailableWorkflowConfigs) {
-        return (
-          <>
-            {showInfoBanner && (
-              <div className={panelBanner}>
-                <CustomBanner
-                  message={t('githubActionWorkflowOptionUseExistingMessageWithoutPreview')}
-                  type={MessageBarType.info}
-                  onDismiss={closeInfoBanner}
-                />
-              </div>
-            )}
-          </>
-        );
-      } else if (formProps.values.workflowOption === WorkflowOption.Add || formProps.values.workflowOption === WorkflowOption.Overwrite) {
-        const information = getWorkflowInformation(
-          formProps.values.runtimeStack,
-          formProps.values.runtimeVersion,
-          formProps.values.runtimeRecommendedVersion,
-          formProps.values.branch,
-          deploymentCenterContext.isLinuxApplication,
-          formProps.values.gitHubPublishProfileSecretGuid,
-          deploymentCenterContext.siteDescriptor.site,
-          deploymentCenterContext.siteDescriptor.slot
-        );
-        return (
-          <>
-            {showInfoBanner && (
-              <div className={panelBanner}>
-                <CustomBanner
-                  message={t('githubActionWorkflowOptionOverwriteIfConfigExists')}
-                  type={MessageBarType.info}
-                  onDismiss={closeInfoBanner}
-                />
-              </div>
-            )}
-            <pre className={deploymentCenterConsole}>{information.content}</pre>
-          </>
-        );
-      }
+    if (formProps.values.workflowOption === WorkflowOption.UseExistingWorkflowConfig) {
+      return createPreviewPanelContent(t('githubActionWorkflowOptionUseExistingMessage'), githubActionExistingWorkflowContents);
+    } else if (formProps.values.workflowOption === WorkflowOption.UseAvailableWorkflowConfigs) {
+      return createPreviewPanelContent(t('githubActionWorkflowOptionUseExistingMessageWithoutPreview'), '');
+    } else if (formProps.values.workflowOption === WorkflowOption.Add || formProps.values.workflowOption === WorkflowOption.Overwrite) {
+      const information = getWorkflowInformation(
+        formProps.values.runtimeStack,
+        formProps.values.runtimeVersion,
+        formProps.values.runtimeRecommendedVersion,
+        formProps.values.branch,
+        deploymentCenterContext.isLinuxApplication,
+        formProps.values.gitHubPublishProfileSecretGuid,
+        deploymentCenterContext.siteDescriptor ? deploymentCenterContext.siteDescriptor.site : '',
+        deploymentCenterContext.siteDescriptor ? deploymentCenterContext.siteDescriptor.slot : ''
+      );
+      return createPreviewPanelContent(t('githubActionWorkflowOptionOverwriteIfConfigExists'), information.content);
     }
   };
 
@@ -146,21 +122,30 @@ const DeploymentCenterCodeSettings: React.FC<DeploymentCenterFieldProps<Deployme
 
   return (
     <>
-      {isDeploymentSetup ? (
+      {!isDeploymentConfigured && isProductionSlot && showProductionSlotInfoBanner && (
+        <div className={deploymentCenterInfoBannerDiv}>
+          <CustomBanner
+            message={t('deploymentCenterProdSlotWarning')}
+            type={MessageBarType.info}
+            onDismiss={closeProductionSlotInfoBanner}
+          />
+        </div>
+      )}
+      <p>
+        <span id="deployment-center-settings-message">{t('deploymentCenterCodeSettingsDescription')}</span>
+        <Link
+          id="deployment-center-settings-learnMore"
+          href={DeploymentCenterLinks.appServiceDocumentation}
+          target="_blank"
+          className={learnMoreLinkStyle}
+          aria-labelledby="deployment-center-settings-message">
+          {` ${t('learnMore')}`}
+        </Link>
+      </p>
+      {isDeploymentConfigured ? (
         <>
-          <p>
-            <span id="deployment-center-settings-message">{t('deploymentCenterCodeSettingsDescription')}</span>
-            <Link
-              id="deployment-center-settings-learnMore"
-              href={DeploymentCenterLinks.appServiceDocumentation}
-              target="_blank"
-              className={learnMoreLinkStyle}
-              aria-labelledby="deployment-center-settings-message">
-              {` ${t('learnMore')}`}
-            </Link>
-          </p>
-          {!isGitHubActionsSetup && <DeploymentCenterCodeSourceKuduConfiguredView />}
-          {isGitHubSourceSetup && <DeploymentCenterGitHubConfiguredView isGitHubActionsSetup={isGitHubActionsSetup} />}
+          {!isGitHubActionsConfigured && <DeploymentCenterCodeSourceKuduConfiguredView />}
+          {isGitHubSourceConfigured && <DeploymentCenterGitHubConfiguredView isGitHubActionsConfigured={isGitHubActionsConfigured} />}
           <DeploymentCenterCodeBuildConfiguredView />
         </>
       ) : (
@@ -178,7 +163,7 @@ const DeploymentCenterCodeSettings: React.FC<DeploymentCenterFieldProps<Deployme
                   {!isUsingExistingOrAvailableWorkflowConfig && <DeploymentCenterCodeBuildRuntimeAndVersion formProps={formProps} />}
                   <DeploymentCenterGitHubWorkflowConfigPreview
                     getPreviewPanelContent={getPreviewPanelContent}
-                    setShowInfoBanner={setShowInfoBanner}
+                    setShowInfoBanner={setShowPreviewPanelInfoBanner}
                     isPreviewFileButtonEnabled={isPreviewFileButtonEnabled}
                     workflowFilePath={workflowFilePath}
                   />

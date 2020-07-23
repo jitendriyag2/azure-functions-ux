@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Formik, FormikProps } from 'formik';
 import { DeploymentCenterFormData, DeploymentCenterCodeFormProps, DeploymentCenterCodeFormData } from '../DeploymentCenter.types';
 import { KeyCodes } from 'office-ui-fabric-react';
-import { commandBarSticky, pivotContent } from '../DeploymentCenter.styles';
 import DeploymentCenterCodePivot from './DeploymentCenterCodePivot';
 import { useTranslation } from 'react-i18next';
 import ConfirmDialog from '../../../../components/ConfirmDialog/ConfirmDialog';
@@ -42,36 +41,27 @@ const DeploymentCenterCodeForm: React.FC<DeploymentCenterCodeFormProps> = props 
       validationSchema={props.formValidationSchema}>
       {(formProps: FormikProps<DeploymentCenterFormData<DeploymentCenterCodeFormData>>) => (
         <form onKeyDown={onKeyDown}>
-          {/* TODO(DC) Move the div tag to the component */}
-          <div id="deployment-center-command-bar" className={commandBarSticky}>
-            <DeploymentCenterCodeCommandBar
-              isLoading={props.isLoading}
-              showPublishProfilePanel={props.showPublishProfilePanel}
-              refresh={() => setIsRefreshConfirmDialogVisible(true)}
-              formProps={formProps}
-            />
-          </div>
-          {/* TODO(DC) remove the empty <> tags */}
-          <>
-            <ConfirmDialog
-              primaryActionButton={{
-                title: t('ok'),
-                onClick: refreshFunction,
-              }}
-              defaultActionButton={{
-                title: t('cancel'),
-                onClick: hideRefreshConfirmDialog,
-              }}
-              title={t('staticSite_refreshConfirmTitle')}
-              content={t('staticSite_refreshConfirmMessage')}
-              hidden={!isRefreshConfirmDialogVisible}
-              onDismiss={hideRefreshConfirmDialog}
-            />
-          </>
-          {/* TODO(DC) move to the component */}
-          <div className={pivotContent}>
-            <DeploymentCenterCodePivot {...props} formProps={formProps} />
-          </div>
+          <DeploymentCenterCodeCommandBar
+            isLoading={props.isLoading}
+            showPublishProfilePanel={props.showPublishProfilePanel}
+            refresh={() => setIsRefreshConfirmDialogVisible(true)}
+            formProps={formProps}
+          />
+          <ConfirmDialog
+            primaryActionButton={{
+              title: t('ok'),
+              onClick: refreshFunction,
+            }}
+            defaultActionButton={{
+              title: t('cancel'),
+              onClick: hideRefreshConfirmDialog,
+            }}
+            title={t('staticSite_refreshConfirmTitle')}
+            content={t('staticSite_refreshConfirmMessage')}
+            hidden={!isRefreshConfirmDialogVisible}
+            onDismiss={hideRefreshConfirmDialog}
+          />
+          <DeploymentCenterCodePivot {...props} formProps={formProps} />
         </form>
       )}
     </Formik>

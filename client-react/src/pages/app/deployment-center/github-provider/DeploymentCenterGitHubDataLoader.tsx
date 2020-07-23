@@ -140,14 +140,10 @@ const DeploymentCenterGitHubDataLoader: React.FC<DeploymentCenterFieldProps> = p
     });
   };
 
-  // TODO(michinoy): We will need to add methods here to manage github specific network calls such as:
-  // repos, orgs, branches, workflow file, etc.
-
   const fetchData = async () => {
     const getGitHubUserRequest = deploymentCenterData.getGitHubUser(getArmToken());
 
-    // TODO(DC) no need for spread operator
-    const [gitHubUserResponse] = await Promise.all([getGitHubUserRequest]);
+    const gitHubUserResponse = await getGitHubUserRequest;
 
     setGitHubAccountStatusMessage(undefined);
 

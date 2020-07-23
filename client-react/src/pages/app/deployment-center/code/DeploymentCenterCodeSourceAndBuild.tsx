@@ -1,14 +1,10 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IDropdownOption, DropdownMenuItemType, Link, MessageBarType } from 'office-ui-fabric-react';
+import { IDropdownOption, DropdownMenuItemType, Link } from 'office-ui-fabric-react';
 import { BuildProvider, ScmType } from '../../../../models/site/config';
 import { Field } from 'formik';
 import Dropdown from '../../../../components/form-controls/DropDown';
-import { learnMoreLinkStyle } from '../../../../components/form-controls/formControl.override.styles';
-import { DeploymentCenterLinks } from '../../../../utils/FwLinks';
-import CustomBanner from '../../../../components/CustomBanner/CustomBanner';
-import { DeploymentCenterContext } from '../DeploymentCenterContext';
-import { deploymentCenterInfoBannerDiv, additionalTextFieldControl } from '../DeploymentCenter.styles';
+import { additionalTextFieldControl } from '../DeploymentCenter.styles';
 import { DeploymentCenterFieldProps, DeploymentCenterCodeFormData, BuildChoiceGroupOption } from '../DeploymentCenter.types';
 import { Guid } from '../../../../utils/Guid';
 import ReactiveFormControl from '../../../../components/form-controls/ReactiveFormControl';
@@ -23,22 +19,10 @@ const DeploymentCenterCodeSourceAndBuild: React.FC<DeploymentCenterFieldProps<De
   const [selectedBuild, setSelectedBuild] = useState<BuildProvider>(BuildProvider.None);
   const [selectedBuildChoice, setSelectedBuildChoice] = useState<BuildProvider>(BuildProvider.None);
   const [isCalloutVisible, setIsCalloutVisible] = useState(false);
-  const [showInfoBanner, setShowInfoBanner] = useState(true);
-
-  const deploymentCenterContext = useContext(DeploymentCenterContext);
 
   const toggleIsCalloutVisible = () => {
     setSelectedBuildChoice(selectedBuild);
     setIsCalloutVisible(!isCalloutVisible);
-  };
-
-  // TODO(DC) rename isProductionSlot() doesn't need to be a function either.
-  const getInProductionSlot = () => {
-    return !(deploymentCenterContext.siteDescriptor && deploymentCenterContext.siteDescriptor.slot);
-  };
-
-  const closeInfoBanner = () => {
-    setShowInfoBanner(false);
   };
 
   const sourceOptions: IDropdownOption[] = [
@@ -102,8 +86,7 @@ const DeploymentCenterCodeSourceAndBuild: React.FC<DeploymentCenterFieldProps<De
   const isGitHubActionsBuild = formProps.values.buildProvider === BuildProvider.GitHubAction;
   const calloutOkButtonDisabled = selectedBuildChoice === selectedBuild;
 
-  // TODO(DC) rename to getBuildProviderDescription
-  const getBuildDescription = () => {
+  const getBuildProviderDescription = () => {
     return isGitHubActionsBuild ? t('deploymentCenterGitHubActionsBuildDescription') : t('deploymentCenterKuduBuildDescription');
   };
 
@@ -123,24 +106,6 @@ const DeploymentCenterCodeSourceAndBuild: React.FC<DeploymentCenterFieldProps<De
 
   return (
     <>
-      {getInProductionSlot() && showInfoBanner && (
-        <div className={deploymentCenterInfoBannerDiv}>
-          <CustomBanner message={t('deploymentCenterProdSlotWarning')} type={MessageBarType.info} onDismiss={closeInfoBanner} />
-        </div>
-      )}
-      {/* TODO(DC) move up */}
-      <p>
-        <span id="deployment-center-settings-message">{t('deploymentCenterCodeSettingsDescription')}</span>
-        <Link
-          id="deployment-center-settings-learnMore"
-          href={DeploymentCenterLinks.appServiceDocumentation}
-          target="_blank"
-          className={learnMoreLinkStyle}
-          aria-labelledby="deployment-center-settings-message">
-          {` ${t('learnMore')}`}
-        </Link>
-      </p>
-
       <Field
         id="deployment-center-code-settings-source-option"
         label={t('deploymentCenterSettingsSourceLabel')}
@@ -157,7 +122,7 @@ const DeploymentCenterCodeSourceAndBuild: React.FC<DeploymentCenterFieldProps<De
           <>
             <ReactiveFormControl id="deployment-center-build-provider-text" pushContentRight={true}>
               <div>
-                {getBuildDescription()}
+                {getBuildProviderDescription()}
                 <Link
                   key="deployment-center-change-build-provider"
                   onClick={toggleIsCalloutVisible}
@@ -172,7 +137,7 @@ const DeploymentCenterCodeSourceAndBuild: React.FC<DeploymentCenterFieldProps<De
           </>
         ) : (
           <ReactiveFormControl id="deployment-center-build-provider-text" pushContentRight={true}>
-            <div>{getBuildDescription()}</div>
+            <div>{getBuildProviderDescription()}</div>
           </ReactiveFormControl>
         ))}
     </>

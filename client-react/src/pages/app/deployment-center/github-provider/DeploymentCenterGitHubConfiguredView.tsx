@@ -16,7 +16,7 @@ import DeploymentCenterGitHubDisconnect from './DeploymentCenterGitHubDisconnect
 
 const DeploymentCenterGitHubConfiguredView: React.FC<DeploymentCenterGitHubConfiguredViewProps> = props => {
   const { t } = useTranslation();
-  const { isGitHubActionsSetup } = props;
+  const { isGitHubActionsConfigured } = props;
   const [org, setOrg] = useState<string | undefined>(undefined);
   const [repo, setRepo] = useState<string | undefined>(undefined);
   const [branch, setBranch] = useState<string | undefined>(undefined);
@@ -160,7 +160,7 @@ const DeploymentCenterGitHubConfiguredView: React.FC<DeploymentCenterGitHubConfi
 
   return (
     <>
-      {isGitHubActionsSetup && (
+      {isGitHubActionsConfigured && (
         <ReactiveFormControl id="deployment-center-github-user" label={t('deploymentCenterSettingsSourceLabel')}>
           <div>
             {`${t('deploymentCenterCodeSettingsSourceGitHub')}`}

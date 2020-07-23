@@ -186,7 +186,7 @@ export interface DeploymentCenterGitHubProviderProps<T = DeploymentCenterContain
 }
 
 export interface DeploymentCenterGitHubConfiguredViewProps {
-  isGitHubActionsSetup?: boolean;
+  isGitHubActionsConfigured?: boolean;
 }
 
 export interface DeploymentCenterGitHubDisconnectProps {
@@ -288,6 +288,12 @@ export interface DeploymentDisconnectStatus {
 export enum DeployDisconnectStep {
   DeleteWorkflowFile = 'DeleteWorkflowFile',
   ClearSCMSettings = 'ClearSCMSettings',
+}
+
+export enum PivotItemKey {
+  Logs = 'logs',
+  Settings = 'settings',
+  Ftps = 'ftps',
 }
 
 export interface WorkflowChoiceGroupOption extends IChoiceGroupOption {

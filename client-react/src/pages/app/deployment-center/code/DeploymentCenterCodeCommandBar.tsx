@@ -11,6 +11,7 @@ import { PortalContext } from '../../../../PortalContext';
 import { useTranslation } from 'react-i18next';
 import { DeploymentCenterConstants } from '../DeploymentCenterConstants';
 import { getErrorMessage } from '../../../../ApiHelpers/ArmHelper';
+import { commandBarSticky } from '../DeploymentCenter.styles';
 
 const DeploymentCenterCodeCommandBar: React.FC<DeploymentCenterCodeCommandBarProps> = props => {
   const { isLoading, showPublishProfilePanel, refresh, formProps } = props;
@@ -148,13 +149,15 @@ const DeploymentCenterCodeCommandBar: React.FC<DeploymentCenterCodeCommandBarPro
   };
 
   return (
-    <DeploymentCenterCommandBar
-      saveFunction={saveFunction}
-      discardFunction={discardFunction}
-      showPublishProfilePanel={showPublishProfilePanel}
-      refresh={refresh}
-      isLoading={isLoading}
-    />
+    <div id="deployment-center-command-bar" className={commandBarSticky}>
+      <DeploymentCenterCommandBar
+        saveFunction={saveFunction}
+        discardFunction={discardFunction}
+        showPublishProfilePanel={showPublishProfilePanel}
+        refresh={refresh}
+        isLoading={isLoading}
+      />
+    </div>
   );
 };
 

@@ -8,11 +8,9 @@ import Dropdown from '../../../../components/form-controls/DropDown';
 import { Field } from 'formik';
 import CustomBanner from '../../../../components/CustomBanner/CustomBanner';
 import { DeploymentCenterLinks } from '../../../../utils/FwLinks';
-
-// TODO(DC) lets rename this file and component to githubsettings
 // TOOD(DC) look in to useRef
 
-const DeploymentCenterGitHubAccount: React.FC<DeploymentCenterGitHubProviderProps> = props => {
+const DeploymentCenterGitHubSettings: React.FC<DeploymentCenterGitHubProviderProps> = props => {
   const {
     formProps,
     gitHubUser,
@@ -63,9 +61,7 @@ const DeploymentCenterGitHubAccount: React.FC<DeploymentCenterGitHubProviderProp
     formProps.setFieldValue('branch', option.key.toString());
   };
 
-  // const githubControls = gitHubUser ? githubSettingControls : gitHubAuthorizeButton;
-  const gitHubAccountControls = gitHubUser ? (
-    // TODO(DC) const githubSettingControls =
+  const githubSettingControls = (
     <>
       {showInfoBanner && (
         <div className={deploymentCenterInfoBannerDiv}>
@@ -80,7 +76,7 @@ const DeploymentCenterGitHubAccount: React.FC<DeploymentCenterGitHubProviderProp
 
       <ReactiveFormControl id="deployment-center-github-user" label={t('deploymentCenterOAuthSingedInAs')}>
         <div>
-          {`${gitHubUser.login}`}
+          {`${gitHubUser ? gitHubUser.login : ''}`}
           <Link
             key="deployment-center-github-change-account-link"
             onClick={authorizeGitHubAccount}
@@ -127,17 +123,19 @@ const DeploymentCenterGitHubAccount: React.FC<DeploymentCenterGitHubProviderProp
         onChange={onBranchChange}
       />
     </>
-  ) : (
-    // const githubAuthorizeButton =
+  );
+
+  const githubAuthorizeButton = (
     <PrimaryButton ariaDescription={t('deploymentCenterOAuthAuthorizeAriaLabel')} onClick={authorizeGitHubAccount}>
       {t('deploymentCenterOAuthAuthorize')}
     </PrimaryButton>
   );
 
-  // TODO(DC) if you find a better way to name this go for it.
+  const gitHubControls = gitHubUser ? githubSettingControls : githubAuthorizeButton;
+
   const gitHubAccountStatusMessageControl = <Label>{gitHubAccountStatusMessage}</Label>;
 
-  return <>{gitHubAccountStatusMessage ? gitHubAccountStatusMessageControl : gitHubAccountControls}</>;
+  return <>{gitHubAccountStatusMessage ? gitHubAccountStatusMessageControl : gitHubControls}</>;
 };
 
-export default DeploymentCenterGitHubAccount;
+export default DeploymentCenterGitHubSettings;

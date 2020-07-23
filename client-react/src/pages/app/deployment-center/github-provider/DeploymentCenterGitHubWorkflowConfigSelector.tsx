@@ -80,13 +80,16 @@ const DeploymentCenterGitHubWorkflowConfigSelector: React.FC<DeploymentCenterGit
         getWorkflowConfigurationRequest,
       ]);
 
-      // TODO(DC)
-      // setShowWarningBanner(appWorkflowConfigurationResponse.metadata.success
-      //   || allWorkflowConfigurationsResponse.metadata.success && allWorkflowConfigurationsResponse.data.length > 0 )
-      //   setShowWorkflowConfigDropdown
+      setShowWarningBanner(
+        appWorkflowConfigurationResponse.metadata.success ||
+          (allWorkflowConfigurationsResponse.metadata.success && allWorkflowConfigurationsResponse.data.length > 0)
+      );
+      setShowWorkflowConfigDropdown(
+        appWorkflowConfigurationResponse.metadata.success ||
+          (allWorkflowConfigurationsResponse.metadata.success && allWorkflowConfigurationsResponse.data.length > 0)
+      );
 
       if (appWorkflowConfigurationResponse.metadata.success) {
-        setShowWarningBanner(true);
         setWorkflowFileExistsWarningMessage(
           t('githubActionWorkflowFileExists', {
             workflowFilePath: workflowFilePath,
@@ -94,21 +97,10 @@ const DeploymentCenterGitHubWorkflowConfigSelector: React.FC<DeploymentCenterGit
           })
         );
 
-        // TODO(DC)
-        // const content = appWorkflowConfigurationResponse.data.content
-        // ? atob(appWorkflowConfigurationResponse.data.content)
-        // : ''
-        // setGithubActionExistingWorkflowContents(content)
-        if (appWorkflowConfigurationResponse.data.content) {
-          setGithubActionExistingWorkflowContents(atob(appWorkflowConfigurationResponse.data.content));
-        } else {
-          setGithubActionExistingWorkflowContents('');
-        }
-
+        const content = appWorkflowConfigurationResponse.data.content ? atob(appWorkflowConfigurationResponse.data.content) : '';
+        setGithubActionExistingWorkflowContents(content);
         setWorkflowConfigDropdownOptions(overwriteOrUseExistingOptions);
-        setShowWorkflowConfigDropdown(true);
       } else if (allWorkflowConfigurationsResponse.metadata.success && allWorkflowConfigurationsResponse.data.length > 0) {
-        setShowWarningBanner(true);
         setWorkflowFileExistsWarningMessage(
           t('githubActionWorkflowsExist', {
             branchName: branch,
@@ -116,9 +108,7 @@ const DeploymentCenterGitHubWorkflowConfigSelector: React.FC<DeploymentCenterGit
         );
 
         setWorkflowConfigDropdownOptions(addOrUseExistingOptions);
-        setShowWorkflowConfigDropdown(true);
       } else {
-        setShowWarningBanner(false);
         setWorkflowFileExistsWarningMessage(undefined);
         setSelectedWorkflowConfigOption(WorkflowOption.Add);
         formProps.setFieldValue('workflowOption', WorkflowOption.Add);
